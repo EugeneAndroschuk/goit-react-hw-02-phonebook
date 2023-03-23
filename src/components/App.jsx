@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
+import Filter from './Filter/Filter';
 import css from './App.module.css';
 
 class App extends Component {
@@ -13,8 +14,8 @@ class App extends Component {
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
     filter: '',
-    name: '',
-    number: '',
+    // name: '',
+    // number: '',
   };
 
   // handleInputChange = e => {
@@ -42,6 +43,17 @@ class App extends Component {
     }))
   }
 
+  onChangeFilter = (e) => {
+    this.setState({
+      filter: e.currentTarget.value,
+    })
+  }
+
+  getFilteredContacts = () => {
+    const normFilter = this.state.filter.toLocaleLowerCase();
+    return this.state.contacts.filter(contact=>contact.name.toLowerCase().includes(normFilter))
+  }
+
   render() {
     return (
       <div className={css.app}>
@@ -49,8 +61,9 @@ class App extends Component {
         <ContactForm onSubmitForm={this.onSubmitForm} />
 
         <h2 className={css.head}>Contacts</h2>
+        <Filter filter={this.state.filter} onFilter={this.onChangeFilter} />
         <ContactList
-          contacts={this.state.contacts}
+          contacts={this.getFilteredContacts()}
           onDeleteContact={this.onDeleteContact}
         />
       </div>
