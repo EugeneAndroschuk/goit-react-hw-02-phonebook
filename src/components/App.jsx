@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
@@ -14,18 +15,15 @@ class App extends Component {
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
     filter: '',
-    // name: '',
-    // number: '',
   };
 
-  // handleInputChange = e => {
-  //   const { name, value } = e.currentTarget;
-  //   this.setState({
-  //     [name]: value,
-  //   });
-  // };
-
   onSubmitForm = stateForm => {
+    const isExist = this.state.contacts.some(contact => contact.name.toLowerCase() === stateForm.name.toLowerCase());
+    
+    if (isExist) {
+      alert(`${stateForm.name} is already in contacts.`);
+      return;
+    }
     const newContact = {
       id: nanoid(),
       name: stateForm.name,
@@ -50,7 +48,7 @@ class App extends Component {
   }
 
   getFilteredContacts = () => {
-    const normFilter = this.state.filter.toLocaleLowerCase();
+    const normFilter = this.state.filter.toLowerCase();
     return this.state.contacts.filter(contact=>contact.name.toLowerCase().includes(normFilter))
   }
 
@@ -70,5 +68,12 @@ class App extends Component {
     );
   }
 }
+
+ContactForm.propTypes = {
+  onSubmitForm: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    number: PropTypes.string.isRequired,
+  }),
+};
 
 export default App;
